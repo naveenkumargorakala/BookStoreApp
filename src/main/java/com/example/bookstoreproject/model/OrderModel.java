@@ -24,7 +24,7 @@ public class OrderModel {
     @JoinColumn(name="book_id")
     private BookModel book;
     private int quantity;
-    private LocalDate date =LocalDate.now();
+    private LocalDate date =LocalDate.now();   
     private boolean cancel;
 
     public OrderModel(UserModel user, BookModel book, OrderDto orderDto) {

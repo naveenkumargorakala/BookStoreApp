@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class UserService implements IUserService {
@@ -82,9 +83,12 @@ public class UserService implements IUserService {
     public String login(LoginDto loginDto){
         UserModel user = repository.findByEmail(loginDto.getEmail());
         if(user.getPassword().equals(loginDto.getPassword())){
-            jmsMailSender.mailSender(user.getEmail(),"Login","Hello" +user.getFirstName()+"\n You are logged into BookStore..... ");
+            String token  = tokenUtil.encodeToken(user.getUserID());
+            jmsMailSender.mailSender(user.getEmail(),"Login","Hello" +user.getFirstName()+"\n You are logged into BookStore..... "+"\n Your otp is "+UserService.sendOtp()+"\n\n Token: "+token);
             return "Login successfully...";
-
+//            if(otp==UserService.sendOtp()){
+//                return "you are the user";
+//            }
         }
         else
             throw new ExceptionClass("Not Valid details...");
@@ -140,5 +144,11 @@ public class UserService implements IUserService {
         }
         else
             throw new ExceptionClass(email+"Email does not exist");
+    }
+
+    public static double sendOtp(){
+        Random random = new Random();
+        double rand = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+        return rand;
     }
 }

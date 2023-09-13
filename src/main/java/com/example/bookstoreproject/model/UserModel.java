@@ -1,11 +1,9 @@
 package com.example.bookstoreproject.model;
 
-import com.example.bookstoreproject.dto.LoginDto;
 import com.example.bookstoreproject.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.Date;
 
 @Data

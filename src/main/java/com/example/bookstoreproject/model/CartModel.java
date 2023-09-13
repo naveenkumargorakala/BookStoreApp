@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -16,13 +18,13 @@ public class CartModel {
     @OneToOne(cascade = CascadeType.ALL )
     @JoinColumn(name = "user_id")
     private UserModel user;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
-    private BookModel book;
+    private List<BookModel> book;
     private int quantity;
 
 
-    public CartModel(UserModel user, BookModel book, int quantity) {
+    public CartModel(UserModel user,List<BookModel> book, int quantity) {
         this.user = user;
         this.book=book;
         this.quantity =quantity;

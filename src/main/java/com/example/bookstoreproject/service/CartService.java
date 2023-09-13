@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CartService implements ICartService{
@@ -26,10 +27,13 @@ public class CartService implements ICartService{
     //inserting Cart data
     public CartModel insertData(CartDto cartDto){
         UserModel user = userRepository.findById(cartDto.getUserId()).get();
-        BookModel book = bookRepository.findById(cartDto.getBookId()).get();
-        CartModel cart = new CartModel(user,book,cartDto.getQuantity());
+        List<BookModel> books =new ArrayList<>();
+        for(int i=0;i<cartDto.getBookIds().size();i++)
+            books.add(bookRepository.findById(cartDto.getBookIds().get(i)).get());
+        CartModel cart = new CartModel(user,books,cartDto.getQuantity());
         cartRepository.save(cart);
         return cart;
+
     }
 
     //All carts Data
@@ -59,7 +63,11 @@ public class CartService implements ICartService{
         CartModel cart = cartRepository.findById(id).get();
         if(cart!=null){
             cart.setUser(userRepository.findById(cartDto.getUserId()).get());
-            cart.setBook(bookRepository.findById(cartDto.getBookId()).get());
+            List<BookModel> books = new ArrayList<>();
+            for(int i=0;i<cartDto.getBookIds().size();i++) {
+                books.add(bookRepository.findById(cartDto.getBookIds().get(i)).get());
+            }
+            cart.setBook(books);
             cart.setQuantity(cartDto.getQuantity());
             cartRepository.save(cart);
             return cart;

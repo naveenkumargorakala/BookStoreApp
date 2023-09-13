@@ -20,27 +20,33 @@ public class CartController {
     @Autowired
     ICartService service;
 
+    @Autowired
+    Response response;
+
     //insert Cart Data
     @PostMapping("/insertcart")
     public ResponseEntity<Response> insert(@RequestBody CartDto cartDto){
         CartModel cart = service.insertData(cartDto);
-        Response cartResponse = new Response(cart,"InsertCart Details");
-        return new ResponseEntity<>(cartResponse, HttpStatus.CREATED);
+        response.setObject(cart);
+        response.setMessage("Inserted Cart Details");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     //Get all cart data
     @GetMapping("/getallcartdata")
-    public ResponseEntity<List<Response>> getCartData(){
+    public ResponseEntity<Response> getCartData(){
         ArrayList<CartModel> cartModel = (ArrayList<CartModel>) service.getAllData();
-        Response response = new Response("Cart",cartModel,"Insert Cart details");
-        return new ResponseEntity<>(response.getList(),HttpStatus.OK);
+        response.setMessage("All Carts Data");
+        response.setObject(cartModel);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     //get cart details by id
     @GetMapping("/getcartbyid/{id}")
     public ResponseEntity<Response> getById(@PathVariable int id){
         CartModel cart = service.getById(id);
-        Response response = new Response(cart,id+"id cart details");
+        response.setObject(cart);
+        response.setMessage(id+" cart details");
         return new ResponseEntity<>(response,HttpStatus.FOUND);
     }
 
@@ -48,7 +54,8 @@ public class CartController {
     @DeleteMapping("/deletecart/{id}  ")
     public ResponseEntity<Response> deleteById(@PathVariable int id){
         String message = service.deleteById(id);
-        Response response = new Response(message,"Delete cart");
+        response.setMessage("Delete Cart Data");
+        response.setObject(message);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
@@ -56,7 +63,8 @@ public class CartController {
     @PutMapping("/updatecart/{id}")
     public ResponseEntity<Response> updateById(@RequestBody CartDto cartDto,@PathVariable int id){
         CartModel cartModel=service.updateById(cartDto,id);
-        Response response = new Response(cartModel,"Update Cart");
+        response.setMessage("Update Cart details");
+        response.setObject(cartModel);
         return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
     }
 
@@ -64,7 +72,8 @@ public class CartController {
     @PutMapping("/updatequantity/{id}")
     public ResponseEntity<Response> updateQuantity(@RequestParam int quantity,@PathVariable int id){
         CartModel cart = service.updateQuantity(quantity,id);
-        Response response = new Response(cart,"update Quantity");
+        response.setObject(cart);
+        response.setMessage("Update Quantity");
         return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
     }
 }

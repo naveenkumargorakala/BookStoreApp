@@ -19,27 +19,33 @@ public class OrderController {
     @Autowired
     IOrderService service;
 
+    @Autowired
+    Response response;
+
     //Place Order
     @PostMapping("/placeorder")
     public ResponseEntity<Response> insert(@RequestBody OrderDto orderDto){
         OrderModel order = service.insertOrder(orderDto);
-        Response response = new Response(order,"Order Placed");
+        response.setMessage("Order Placed");
+        response.setObject(order);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     //get all orders
     @GetMapping("/getallorders")
-    public ResponseEntity<List<Response>> getAllOrders(){
+    public ResponseEntity<Response> getAllOrders(){
         List<OrderModel> orderList = service.orderList();
-        Response response = new Response(orderList);
-        return new ResponseEntity<>(response.getList(),HttpStatus.OK);
+        response.setObject(orderList);
+        response.setMessage("get all orders");
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     //get order data by id
     @GetMapping("/getbyid/{id}")
     public ResponseEntity<Response> getOrder(@PathVariable int id){
         OrderModel order = service.getOrder(id);
-        Response response = new Response(order,id+" oreder details");
+        response.setMessage("Order Details");
+        response.setObject(order);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
@@ -47,7 +53,8 @@ public class OrderController {
     @PutMapping("/updateorder/{id}")
     public ResponseEntity<Response> updateOrder(@RequestBody OrderDto orderDto,@PathVariable int id){
         OrderModel orderModel = service.updateOrder(orderDto,id);
-        Response response = new Response(orderModel,"Update Order");
+        response.setObject(orderModel);
+        response.setMessage("Update Details Of Order");
         return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
     }
 
@@ -55,7 +62,8 @@ public class OrderController {
     @PutMapping("/updatecancel/{id}")
     public ResponseEntity<Response> updateCancel(@PathVariable int id){
         String order = service.updateCancel(id);
-        Response response = new Response(order,"Cancel Order");
+        response.setMessage(order);
+        response.setObject("Cancel Order");
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
@@ -63,7 +71,8 @@ public class OrderController {
     @DeleteMapping("/deleteorder/{id}")
     public ResponseEntity<Response> deleteOrder(@PathVariable int id){
         String order = service.deleteOrder(id);
-        Response response = new Response(order,"Delete Order");
+        response.setObject(order);
+        response.setMessage("Delete Order");
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

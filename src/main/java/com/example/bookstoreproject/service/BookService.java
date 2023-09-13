@@ -15,17 +15,19 @@ public class BookService implements IBookService{
     @Autowired
     BookRepository bookRepository;
 
+
     //insert book details
     public BookModel insert(BookDto bookDto){
         BookModel book = new BookModel(bookDto);
         return bookRepository.save(book);
     }
 
+
     //get all books
     public List<BookModel> getAllBooks(){
-        List<BookModel> bookList = bookRepository.findAll();
-        return bookList;
+        return bookRepository.findAll();
     }
+
 
     //get book by id
     public BookModel getById(int id){
@@ -35,6 +37,7 @@ public class BookService implements IBookService{
         }else
             throw new ExceptionClass(id+"id is not available to get data");
     }
+
 
     //delete book by id
     public String deleteBook(int id){
@@ -47,6 +50,7 @@ public class BookService implements IBookService{
             throw new ExceptionClass("there is  no book with id "+id+" to delete");
     }
 
+
     //get book by book name
     public List<BookModel> getBookByName(String bookName){
         List<BookModel> book = bookRepository.findBYBookName(bookName);
@@ -55,6 +59,7 @@ public class BookService implements IBookService{
         else
             throw new ExceptionClass(bookName+" to get bookdetails");
     }
+
 
     //update book by id
     public BookModel updateBook(BookDto bookDto,int id){
@@ -74,6 +79,7 @@ public class BookService implements IBookService{
             throw new ExceptionClass("id is Not Available to Update");
     }
 
+
     //update Quantity
     public BookModel updateQuantity(int id,int quantity){
         BookModel book = bookRepository.findById(id).get();
@@ -86,11 +92,13 @@ public class BookService implements IBookService{
             throw new ExceptionClass(id+"id not available to update quantity");
     }
 
+
     //Ascending order
     public List<BookModel> ascendingOrder(){
         List<BookModel> list = bookRepository.findAllByOrderByBookName();
         return list;
     }
+
 
     //Descending Order
     public List<BookModel> descendingOrder(){
