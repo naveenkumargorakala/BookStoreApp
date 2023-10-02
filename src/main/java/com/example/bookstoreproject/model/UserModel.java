@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -14,12 +17,13 @@ public class UserModel {
 
     @Id
     @GeneratedValue
-    private int userID;
+    private long userID;
     private String firstName;
     private String lastName;
     private String email;
     private String address;
     private Date date;
+    private String phoneNumber;
     private String password;
 
     public UserModel(UserDto userDto) {
@@ -29,6 +33,7 @@ public class UserModel {
         this.address = userDto.getAddress();
         this.date = userDto.getDate();
         this.password = userDto.getPassword();
+        this.phoneNumber=userDto.getPhoneNumber();
     }
 
 }

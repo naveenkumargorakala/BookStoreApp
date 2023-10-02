@@ -1,10 +1,7 @@
 package com.example.bookstoreproject.model;
 
 import com.example.bookstoreproject.dto.BookDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class BookModel {
 
     @Id
-    @GeneratedValue
-    private int bookId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long bookId;
     private String bookName;
     private String authorName;
     private String bookDescription;

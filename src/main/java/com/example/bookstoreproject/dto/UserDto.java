@@ -1,5 +1,6 @@
 package com.example.bookstoreproject.dto;
 
+import com.example.bookstoreproject.model.CartModel;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,12 @@ public class UserDto {
     private String firstName;
     @Pattern(regexp = "^[A-Z][a-z]{2,}$",message = "You are Entered Wrong Format")
     private String lastName;
-    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",message = "You are Entered Wrong Format of Email")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",message = "You are Entered Wrong Format of Email")
     private String email;
     private String address;
     private Date date;
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",message = "must satisfy all the things")
     private String password;
+    private String phoneNumber;
+
 }

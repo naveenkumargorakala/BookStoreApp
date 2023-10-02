@@ -10,15 +10,15 @@ public interface IBookService {
 
     List<BookModel> getAllBooks();
 
-    BookModel getById(int id);
+    BookModel getById(long id);
 
-    String deleteBook(int id);
+    String deleteBook(long id);
 
     List<BookModel> getBookByName(String bookName);
 
-    BookModel updateBook(BookDto bookDto,int id);
+    BookModel updateBook(BookDto bookDto,long id);
 
-    BookModel updateQuantity(int id,int quantity);
+    BookModel updateQuantity(long id,int quantity);
 
     List<BookModel> ascendingOrder();
 

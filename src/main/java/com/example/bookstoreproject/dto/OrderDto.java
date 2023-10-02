@@ -12,9 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderDto {
 
-    private String address;
-    private int userId;
-    private int bookId;
+    private long userId;
+    private List<String> address;
+    private List<Integer> bookIds;
+    private long totalPrice;
     private int quantity;
 
 }

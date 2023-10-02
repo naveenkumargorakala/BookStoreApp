@@ -30,7 +30,7 @@ public class BookService implements IBookService{
 
 
     //get book by id
-    public BookModel getById(int id){
+    public BookModel getById(long id){
         BookModel book = bookRepository.findById(id).get();
         if(book!=null) {
             return book;
@@ -40,7 +40,7 @@ public class BookService implements IBookService{
 
 
     //delete book by id
-    public String deleteBook(int id){
+    public String deleteBook(long id){
         boolean isBook= bookRepository.existsById(id);
         if(isBook){
             bookRepository.deleteById(id);
@@ -62,7 +62,7 @@ public class BookService implements IBookService{
 
 
     //update book by id
-    public BookModel updateBook(BookDto bookDto,int id){
+    public BookModel updateBook(BookDto bookDto,long id){
         BookModel book = bookRepository.findById(id).get();
         if(book != null){
 //            BookModel bookModel = new BookModel(id,bookDto);
@@ -81,7 +81,7 @@ public class BookService implements IBookService{
 
 
     //update Quantity
-    public BookModel updateQuantity(int id,int quantity){
+    public BookModel updateQuantity(long id,int quantity){
         BookModel book = bookRepository.findById(id).get();
         if(book!=null) {
             book.setQuantity(quantity);

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Slf4j
@@ -49,7 +48,7 @@ public class BookController {
         response.setMessage(id+"book details");
         response.setObject(iBookService.getById(id));
         log.info("Requested to get book details by id");
-        return new ResponseEntity<>(response,HttpStatus.FOUND);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     //Delete book details

@@ -1,6 +1,8 @@
 package com.example.bookstoreproject.controller;
 
 import com.example.bookstoreproject.dto.CartDto;
+import com.example.bookstoreproject.dto.CartItemDto;
+import com.example.bookstoreproject.model.CartItem;
 import com.example.bookstoreproject.model.CartModel;
 import com.example.bookstoreproject.response.Response;
 import com.example.bookstoreproject.service.ICartService;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/cart")
 public class CartController {
 
@@ -24,56 +27,105 @@ public class CartController {
     Response response;
 
     //insert Cart Data
-    @PostMapping("/insertcart")
-    public ResponseEntity<Response> insert(@RequestBody CartDto cartDto){
-        CartModel cart = service.insertData(cartDto);
-        response.setObject(cart);
-        response.setMessage("Inserted Cart Details");
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+//    @PostMapping("/addtocart")
+//    public ResponseEntity<Response> insert(@RequestBody CartDto cartDto){
+//
+//        CartModel cart = service.insertData(cartDto);
+//        response.setObject(cart);
+//        response.setMessage("Inserted Cart Details");
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
+//
+//    //Get all cart data
+//    @GetMapping("/getallcartdata")
+//    public ResponseEntity<Response> getCartData(){
+//        ArrayList<CartModel> cartModel = (ArrayList<CartModel>) service.getAllData();
+//        response.setMessage("All Carts Data");
+//        response.setObject(cartModel);
+//        return new ResponseEntity<>(response,HttpStatus.OK);
+//    }
+//
+//    //get cart details by id
+//    @GetMapping("/getcartbyusertoken/{token}")
+//    public ResponseEntity<Response> getById(@PathVariable String token){
+//        CartModel cart = service.getByToken(token);
+//        response.setObject(cart);
+//        response.setMessage(" cart details");
+//        return new ResponseEntity<>(response,HttpStatus.OK);
+//    }
+//
+//    //delete cart
+//    //http://localhost:8080/cart/deletebycartid
+//    @DeleteMapping("/deletecart")
+//    public ResponseEntity<Response> deleteById(@RequestHeader("Authorization") String token){
+//        String message = service.deleteByToken(token);
+//        response.setMessage("Delete Cart Data");
+//        response.setObject(message);
+//        return new ResponseEntity<>(response,HttpStatus.OK);
+//    }
+//
+//    //update cart details
+//    @PutMapping("/updatecart")
+//    public ResponseEntity<Response> updateById(@RequestBody CartDto cartDto,@RequestHeader("Authorization") String token){
+//        CartModel cartModel=service.updateByToken(cartDto,token);
+//        response.setMessage("Update Cart details");
+//        response.setObject(cartModel);
+//        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+//    }
+//
+//    //update quantity
+//    @PutMapping("/updatequantity")
+//    public ResponseEntity<Response> updateQuantity(@RequestParam int quantity,@RequestHeader("Authorization") String token){
+//        CartModel cart = service.updateQuantity(quantity,token);
+//        response.setObject(cart);
+//        response.setMessage("Update Quantity");
+//        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+//    }
+//
+//    @GetMapping("/cartId/{userId}")
+//    public int cartId(@PathVariable int userId){
+//        int cartId;
+//        return cartId=service.cartId(userId);
+//    }
 
-    //Get all cart data
-    @GetMapping("/getallcartdata")
-    public ResponseEntity<Response> getCartData(){
-        ArrayList<CartModel> cartModel = (ArrayList<CartModel>) service.getAllData();
-        response.setMessage("All Carts Data");
+//    http://localhost:8080/cart/addtocart/
+    @PostMapping("/addtocart/{token}")
+    public ResponseEntity<Response> addCart( @PathVariable String token,@RequestBody CartItemDto cartItemDto){
+        CartModel cartModel = service.addCart(token,cartItemDto);
         response.setObject(cartModel);
+        response.setMessage("Item Added SuccessFully");
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    //get cart details by id
-    @GetMapping("/getcartbyid/{id}")
-    public ResponseEntity<Response> getById(@PathVariable int id){
-        CartModel cart = service.getById(id);
+    @GetMapping("/getcartbyusertoken/{token}")
+    public ResponseEntity<Response> getCart(@PathVariable String token){
+        CartModel cart = service.getCart(token);
+        response.setMessage("Get Cart Details");
         response.setObject(cart);
-        response.setMessage(id+" cart details");
-        return new ResponseEntity<>(response,HttpStatus.FOUND);
-    }
-
-    //delete cart
-    @DeleteMapping("/deletecart/{id}  ")
-    public ResponseEntity<Response> deleteById(@PathVariable int id){
-        String message = service.deleteById(id);
-        response.setMessage("Delete Cart Data");
-        response.setObject(message);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    //update cart details
-    @PutMapping("/updatecart/{id}")
-    public ResponseEntity<Response> updateById(@RequestBody CartDto cartDto,@PathVariable int id){
-        CartModel cartModel=service.updateById(cartDto,id);
-        response.setMessage("Update Cart details");
-        response.setObject(cartModel);
-        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+        @PutMapping("/updatecartquantity/{quantity}/{token}")
+    public ResponseEntity<Response> updateQuantity(@PathVariable int quantity, @PathVariable String token){
+        CartModel cart = service.updateQuantity(quantity,token);
+        response.setMessage("Update Cart Details");
+        response.setObject(cart);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    //update quantity
-    @PutMapping("/updatequantity/{id}")
-    public ResponseEntity<Response> updateQuantity(@RequestParam int quantity,@PathVariable int id){
-        CartModel cart = service.updateQuantity(quantity,id);
+    @DeleteMapping("/deletecart/{token}")
+    public ResponseEntity<Response> deleteCart(@PathVariable String token){
+        String deletedMessage = service.deleteCart(token);
+        response.setObject(deletedMessage);
+        response.setMessage("Deleted Succssfully");
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PutMapping("/removecartItem/{token}")
+    public ResponseEntity<Response> removeFromCart(@RequestBody CartItemDto cartItemDto,@PathVariable String token){
+        CartModel cart= service.removeFromCart(cartItemDto,token);
+        response.setMessage("remove cartItem from Cart Details");
         response.setObject(cart);
-        response.setMessage("Update Quantity");
-        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

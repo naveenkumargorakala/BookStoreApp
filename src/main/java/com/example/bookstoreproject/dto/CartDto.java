@@ -7,9 +7,9 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class CartDto {
+public class
+CartDto {
 
-    private int userId;
-    private List<Integer> bookIds;
+    private long bookId;
     private int quantity;
 }

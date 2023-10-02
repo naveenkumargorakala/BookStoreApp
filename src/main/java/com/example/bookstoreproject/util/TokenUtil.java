@@ -13,21 +13,20 @@ public class TokenUtil {
     private static final String TOKEN_SECRET= "SecretOne";
 
     //Encode token
-    public String encodeToken(int id){
+    public String encodeToken(long id){
         Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
-
         String token = JWT.create().withClaim("user_id",id).sign(algorithm);
         return token;
     }
 
     //decode Token
-    public int decodeToken(String token){
+    public long decodeToken(String token){
         Verification verification = null;
         verification =JWT.require(Algorithm.HMAC256(TOKEN_SECRET));
         JWTVerifier jwtVerifier = verification.build();
         DecodedJWT decodedJWT = jwtVerifier.verify(token);
         Claim claim = decodedJWT.getClaim("user_id");
-        int user_id = claim.asInt();
+        long user_id = claim.asInt();
 
         return user_id;
     }

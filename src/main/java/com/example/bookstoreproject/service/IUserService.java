@@ -7,15 +7,15 @@ import com.example.bookstoreproject.model.UserModel;
 import java.util.List;
 
 public interface IUserService {
-    String register(UserDto dto);
-    UserModel getByEmail(String email, String token);
+    UserModel register(UserDto dto);
+    UserModel getByEmail(String email);
     List<UserModel> allUsers();
 
-    UserModel retrieve(String token);
+    long retrieve(String token);
 
     UserModel updateUser(UserDto userDto, String email, String token);
 
-    String deleteUser(int id, String token);
+    String deleteUser(long id);
 
     String login(LoginDto loginDto);
 

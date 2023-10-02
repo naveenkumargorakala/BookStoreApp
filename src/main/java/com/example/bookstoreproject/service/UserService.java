@@ -26,22 +26,27 @@ public class UserService implements IUserService {
     JMSMailSender jmsMailSender;
 
     //registered user into bookstore
-    public String register(UserDto dto) {
+    public UserModel register(UserDto dto) {
+        UserModel user1 =repository.findByEmail(dto.getEmail());
+        if(user1==null){
         UserModel user = new UserModel(dto);
-        repository.save(user);
-        String token = tokenUtil.encodeToken(user.getUserID());
-        jmsMailSender.mailSender(user.getEmail(),"Registerd to BookStore","Hello "+user.getFirstName()+"\n Your details are Uploaded into BookStore..... \n You can check it by click on below link\n http://localhost:8080/user/retrieve/"+token);
-        return token;
+        user= repository.save(user);
+//        String token = tokenUtil.encodeToken(user.getUserID());
+        jmsMailSender.mailSender(user.getEmail(),"Registerd to BookStore","Hello "+user.getFirstName()+"\n Your details are Uploaded into BookStore..... \n You can check it by click on below link\n http://localhost:8080/user/retrieve/");
+        return user;}
+        else {
+            throw new ExceptionClass(user1.getEmail()+" already exists");
+        }
     }
 
 
     //get user details by email
-    public UserModel getByEmail(String email, String token){
-            int id = tokenUtil.decodeToken(token);
-            UserModel userModel = repository.findById(id).get();
-            if(userModel.getEmail().equals(email)) {
-                UserModel user = repository.findByEmail(email);
-                return user;
+    public UserModel getByEmail(String email){
+//            int id = tokenUtil.decodeToken(token);
+        UserModel user = repository.findByEmail(email);
+            if(user.getEmail().equals(email)) {
+                UserModel user1 = repository.findByEmail(email);
+                return user1;
             }
             else
                 throw new ExceptionClass(email+" email is not available to update user details");
@@ -56,20 +61,20 @@ public class UserService implements IUserService {
     }
 
     //retrieve user details
-    public UserModel retrieve(String token){
-        int user_id = tokenUtil.decodeToken(token);
-        UserModel user = repository.findById(user_id).get();
-        return user;
+    public long retrieve(String token){
+        long user_id = tokenUtil.decodeToken(token);
+        return user_id;
     }
 
 
 
     //delete user details
-    public String deleteUser(int id, String token){
-        int userId = tokenUtil.decodeToken(token);
-        if(userId == id ){
+    public String deleteUser(long id){
+//        int userId = tokenUtil.decodeToken(token);
+
             UserModel user = repository.findById(id).get();
-            jmsMailSender.mailSender(user.getEmail(),"Remove Details","Hello "+user.getFirstName()+"\n Your details are Deleted from BookStore..... \n You can check it by click on below link\n http://localhost:8080/user/retrieve/"+token);
+        if(user.getUserID() == id ){
+            jmsMailSender.mailSender(user.getEmail(),"Remove Details","Hello "+user.getFirstName()+"\n Your details are Deleted from BookStore..... \n You can check it by click on below link\n http://localhost:8080/user/retrieve/");
             repository.deleteById(id);
             return id+" Details are removed";
         }
@@ -85,7 +90,7 @@ public class UserService implements IUserService {
         if(user.getPassword().equals(loginDto.getPassword())){
             String token  = tokenUtil.encodeToken(user.getUserID());
             jmsMailSender.mailSender(user.getEmail(),"Login","Hello" +user.getFirstName()+"\n You are logged into BookStore..... "+"\n Your otp is "+UserService.sendOtp()+"\n\n Token: "+token);
-            return "Login successfully...";
+            return token;
 //            if(otp==UserService.sendOtp()){
 //                return "you are the user";
 //            }
@@ -111,7 +116,7 @@ public class UserService implements IUserService {
 
     //update user details
     public UserModel updateUser(UserDto userDto, String email, String token) {
-        int id = tokenUtil.decodeToken(token);
+        long id = tokenUtil.decodeToken(token);
         UserModel user1 = repository.findById(id).get();
         if (user1.getEmail().equals(email)) {
             UserModel user = repository.findByEmail(email);
@@ -121,6 +126,7 @@ public class UserService implements IUserService {
             user.setAddress(userDto.getAddress());
             user.setDate(userDto.getDate());
             user.setEmail(userDto.getEmail());
+            user.setPhoneNumber(userDto.getPhoneNumber());
             repository.save(user);
             jmsMailSender.mailSender(user.getEmail(), "You details are Updated", "Hello " + user.getFirstName() + "\n Your details are Updated into BookStore..... \n You can check it by click on below link\n http://localhost:8080/user/retrieve/" + token);
             return user;
