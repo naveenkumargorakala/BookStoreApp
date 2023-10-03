@@ -128,7 +128,7 @@ public class CartService implements ICartService{
 
     //add cartitem to cart
     @Transactional
-    public CartModel addCart( String token,CartItemDto cartItemDto) {
+    public CartModel addCart(String token, CartItemDto cartItemDto) {
         long user_id = tokenUtil.decodeToken(token);
         UserModel user = userRepository.findById(user_id)
                 .orElseThrow(() -> new ExceptionClass("User not found with ID: " + user_id));
@@ -137,27 +137,31 @@ public class CartService implements ICartService{
                 .orElseThrow(() -> new ExceptionClass("Book not found with ID: " + cartItemDto.getBookId()));
 
         CartModel cart = cartRepository.findByUser(user).orElse(null);
-        CartItem cartItem = new CartItem(book, cartItemDto.getQuantity());
+
         if (cart == null) {
             cart = new CartModel();
             cart.setUser(user);
             cart.setCartItems(new ArrayList<>());
-            cart.getCartItems().add(cartItem);
-            book.setQuantity(book.getQuantity() - cartItem.getQuantity());
-            bookRepository.save(book);
-            cartItem.setBook(book);
-            cartItemRepository.save(cartItem);
-            cart.getCartItems().add(cartItem);
-            cartRepository.save(cart);
         }
+
+        CartItem cartItem = new CartItem(book, cartItemDto.getQuantity());
+        cartItem.setCart(cart); // Set the CartModel in the CartItem
+
+        // Add the new cart item to the cart
+        cart.getCartItems().add(cartItem);
+
+        // Update book quantity
         book.setQuantity(book.getQuantity() - cartItem.getQuantity());
         bookRepository.save(book);
-        cartItem.setBook(book);
-        cartItemRepository.save(cartItem);
-        cart.getCartItems().add(cartItem);
+
+        // Save the CartModel and associated CartItem
         cartRepository.save(cart);
+        cartItemRepository.save(cartItem);
+
         return cart;
     }
+
+
 
 
     //remove cartItem from cart
