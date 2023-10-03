@@ -132,28 +132,26 @@ public class CartService implements ICartService{
         long user_id = tokenUtil.decodeToken(token);
         UserModel user = userRepository.findById(user_id)
                 .orElseThrow(() -> new ExceptionClass("User not found with ID: " + user_id));
-
         BookModel book = bookRepository.findById(cartItemDto.getBookId())
                 .orElseThrow(() -> new ExceptionClass("Book not found with ID: " + cartItemDto.getBookId()));
-
         CartModel cart = cartRepository.findByUser(user).orElse(null);
-
         if (cart == null) {
             cart = new CartModel();
             cart.setUser(user);
             cart.setCartItems(new ArrayList<>());
         }
-
         CartItem cartItem = new CartItem(book, cartItemDto.getQuantity());
+        for(CartItem cartItem1:cart.getCartItems()){
+            if(cartItem1.getBook().equals(cartItem.getBook())){
+                cartItem1.setQuantity(cartItem1.getQuantity()+cartItem.getQuantity());
+            }
+        }
         cartItem.setCart(cart); // Set the CartModel in the CartItem
-
         // Add the new cart item to the cart
         cart.getCartItems().add(cartItem);
-
         // Update book quantity
         book.setQuantity(book.getQuantity() - cartItem.getQuantity());
         bookRepository.save(book);
-
         // Save the CartModel and associated CartItem
         cartRepository.save(cart);
         cartItemRepository.save(cartItem);

@@ -121,7 +121,7 @@ public class CartController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PutMapping("/removecartItem/{token}")
+    @DeleteMapping("/removecartItem/{token}")
     public ResponseEntity<Response> removeFromCart(@RequestBody CartItemDto cartItemDto,@PathVariable String token){
         CartModel cart= service.removeFromCart(cartItemDto,token);
         response.setMessage("remove cartItem from Cart Details");
