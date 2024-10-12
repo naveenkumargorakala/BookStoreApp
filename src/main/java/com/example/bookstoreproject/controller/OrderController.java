@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(value = "http://localhost:4200/")
 @RequestMapping("/order")
 public class OrderController {
 
@@ -78,6 +79,7 @@ public class OrderController {
 //    }
 
     @PostMapping("/placeorder/{token}")
+<<<<<<< Updated upstream
     public ResponseEntity<Response> placeOrder(@PathVariable String token, @RequestBody List<CartItem> cartItems, @RequestBody List<String> address){
         OrderModel order = service.placeOrder(token,cartItems,address);
         response.setObject(order);
@@ -92,4 +94,27 @@ public class OrderController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+=======
+    public ResponseEntity<Response> placeOrder(@PathVariable String token, @RequestBody List<CartItem> cartItems){
+        OrderModel order = service.placeOrder(token,cartItems);
+        response.setObject(order);
+        response.setMessage("Order Placed Successfully");
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+    @GetMapping("/getorder/{token}")
+    public ResponseEntity<Response> getOrder(@PathVariable String token){
+        OrderModel order = service.getOrder(token);
+        response.setObject(order);
+        response.setMessage("Your Order is"+order.getId());
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PutMapping("/updateaddress/{token}")
+    public ResponseEntity<Response> updateAddress(@PathVariable String token,@RequestBody List<String> address){
+        OrderModel order = service.updateAddress(token,address);
+        response.setObject(order);
+        response.setMessage("address updated Successfully");
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+>>>>>>> Stashed changes
 }

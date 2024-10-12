@@ -141,13 +141,21 @@ public class OrderService implements IOrderService{
 ////    }
 
 
+<<<<<<< Updated upstream
     public OrderModel placeOrder(String token, List<CartItem> cartItems, List<String> address){
+=======
+    public OrderModel placeOrder(String token, List<CartItem> cartItems){
+>>>>>>> Stashed changes
         long useId = tokenUtil.decodeToken(token);
         UserModel user = userRepository.findById(useId).get();
         OrderModel order = new OrderModel();
         order.setUser(user);
         order.setOrderDate(new Date());
+<<<<<<< Updated upstream
         order.setAddress(address);
+=======
+//        order.setAddress(address);
+>>>>>>> Stashed changes
         for (CartItem cartItem : cartItems) {
             OrderItem orderItem = new OrderItem();
             orderItem.setBook(cartItem.getBook());
@@ -163,6 +171,7 @@ public class OrderService implements IOrderService{
     public OrderModel getOrder(String token){
         long userId= tokenUtil.decodeToken(token);
         UserModel user = userRepository.findById(userId).get();
+<<<<<<< Updated upstream
         OrderModel order = orderRepository.findByuser(user);
         if(order!=null){
             return order;
@@ -170,6 +179,28 @@ public class OrderService implements IOrderService{
         else{
             throw new ExceptionClass("Order is not available for the user"+user.getFirstName());
         }
+=======
+        OrderModel order = orderRepository.findFirstByUser(user);
+        if(order!=null){
+            return order;
+        }
+        else{
+            throw new ExceptionClass("Order is not available for the user"+user.getFirstName());
+        }
+    }
+
+    public OrderModel updateAddress(String token,List<String> address){
+        long userId= tokenUtil.decodeToken(token);
+        UserModel user = userRepository.findById(userId).get();
+        OrderModel order = orderRepository.findFirstByUser(user);
+        if(order!=null) {
+            order.setAddress(address);
+            orderRepository.save(order);
+            return order;
+        }
+        else
+            throw new ExceptionClass("Order is not found");
+>>>>>>> Stashed changes
     }
 
 }

@@ -36,6 +36,7 @@ public class CartService implements ICartService{
     @Autowired
     TokenUtil tokenUtil;
 
+<<<<<<< Updated upstream
     //inserting Cart data
 //    public CartModel insertData(CartDto cartDto,String token){
 //
@@ -129,11 +130,56 @@ public class CartService implements ICartService{
     //add cartitem to cart
     @Transactional
     public CartModel addCart(String token, CartItemDto cartItemDto) {
+=======
+
+    //add cartitem to cart
+    @Transactional
+    public CartModel addCart(String token, CartItemDto cartItemDto) {
         long user_id = tokenUtil.decodeToken(token);
         UserModel user = userRepository.findById(user_id)
                 .orElseThrow(() -> new ExceptionClass("User not found with ID: " + user_id));
         BookModel book = bookRepository.findById(cartItemDto.getBookId())
                 .orElseThrow(() -> new ExceptionClass("Book not found with ID: " + cartItemDto.getBookId()));
+        CartModel cart = cartRepository.findByUser(user).orElse(null);
+
+        if (cart == null) {
+            cart = new CartModel();
+            cart.setUser(user);
+            cart.setCartItems(new ArrayList<>());
+        }
+
+        Optional<CartItem> existingCartItem = cart.getCartItems()
+                .stream()
+                .filter(cartItem -> cartItem.getBook().equals(book))
+                .findFirst();
+
+        if (existingCartItem.isPresent()) {
+            existingCartItem.get().setQuantity(existingCartItem.get().getQuantity() + cartItemDto.getQuantity());
+        } else {
+            CartItem cartItem = new CartItem(book, cartItemDto.getQuantity());
+            cartItem.setCart(cart);
+            cart.getCartItems().add(cartItem);
+        }
+        book.setQuantity(book.getQuantity() - cartItemDto.getQuantity());
+        bookRepository.save(book);
+        cartRepository.save(cart);
+
+        return cart;
+    }
+
+
+
+
+    //remove cartItem from cart
+    @Transactional
+    public CartModel removeFromCart(CartItemDto cartItemDto, String token) {
+>>>>>>> Stashed changes
+        long user_id = tokenUtil.decodeToken(token);
+        UserModel user = userRepository.findById(user_id)
+                .orElseThrow(() -> new ExceptionClass("User not found with ID: " + user_id));
+        BookModel book = bookRepository.findById(cartItemDto.getBookId())
+                .orElseThrow(() -> new ExceptionClass("Book not found with ID: " + cartItemDto.getBookId()));
+<<<<<<< Updated upstream
         CartModel cart = cartRepository.findByUser(user).orElse(null);
         if (cart == null) {
             cart = new CartModel();
@@ -155,12 +201,34 @@ public class CartService implements ICartService{
         // Save the CartModel and associated CartItem
         cartRepository.save(cart);
         cartItemRepository.save(cartItem);
+=======
+        CartModel cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new ExceptionClass("Cart not found for the user: " + user.getUserID()));
+
+        Optional<CartItem> cartItemOptional = cart.getCartItems()
+                .stream()
+                .filter(cartItem -> cartItem.getBook().equals(book))
+                .findFirst();
+
+        if (cartItemOptional.isPresent()) {
+            CartItem cartItemToRemove = cartItemOptional.get();
+            int removedQuantity = cartItemToRemove.getQuantity();
+            book.setQuantity(book.getQuantity() + removedQuantity);
+            bookRepository.save(book);
+            cart.getCartItems().remove(cartItemToRemove);
+            cartItemRepository.deleteById(cartItemToRemove.getCartItemId());
+            cartRepository.save(cart);
+        } else {
+            throw new ExceptionClass("CartItem not found in the user's cart.");
+        }
+>>>>>>> Stashed changes
 
         return cart;
     }
 
 
 
+<<<<<<< Updated upstream
 
     //remove cartItem from cart
     @Transactional
@@ -192,6 +260,8 @@ public class CartService implements ICartService{
     }
 
 
+=======
+>>>>>>> Stashed changes
     //delete cart
     public String deleteCart(String token){
         long user_id = tokenUtil.decodeToken(token);
